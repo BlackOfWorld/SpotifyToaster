@@ -6,3 +6,4 @@ Properties/ProtectedResources.Designer.cs
 Properties/ProtectedResources.resx
 *.pdb
 bin/Release/SpotifyToaster.exe.config
+/.vs/SpotifyToaster/v15/Server/sqlite3

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Xml.XPath;
 
 namespace spotifytoaster
@@ -21,15 +22,12 @@ namespace spotifytoaster
         private const String trackNumberXpath = "/lfm/track/album";
         private XPathNavigator navigator;
 
-        private String getLastFMAPIKey()
-        {
-            return spotifytoaster.Properties.ProtectedResources.lastFmAPIKey;
-        }
+        private String getLastFMAPIKey() => "6911cdae39c14f9c2afd289eadd23b04";
 
         /*
          * Get's a 64x64 pixel image URL reference for the artist and track supplied
          */
-        public Boolean loadAlbumInfo(String artist, String track)
+        public bool loadAlbumInfoAsync(String artist, String track)
         {
             try
             {
@@ -47,56 +45,21 @@ namespace spotifytoaster
             }
         }
 
-        public String getAlbumImageURL()
-        {
-            if (null != navigator)
-            {
-                XPathNavigator nodeImage = navigator.SelectSingleNode(smallImageXpath);
-                if (null != nodeImage)
-                {
-                    return nodeImage.InnerXml;
-                }
-            }
+        public string getAlbumImageURL() => navigator?.SelectSingleNode(smallImageXpath)?.InnerXml;
 
-            return null;
-        }
 
-        public String getAlbumTitle()
-        {
-            if (null != navigator)
-            {
-                XPathNavigator nodeTitle = navigator.SelectSingleNode(albumTitleXpath);
-                if (null != nodeTitle)
-                {
-                    return nodeTitle.InnerXml;
-                }
-            }
+        public string getAlbumTitle() => navigator?.SelectSingleNode(albumTitleXpath)?.InnerXml;
 
-            return null;
-        }
-
-        public String getTrackNumber()
-        {
-            if (null != navigator)
-            {
-                XPathNavigator nodeTrackNumber = navigator.SelectSingleNode(trackNumberXpath);
-                if (null != nodeTrackNumber)
-                {
-                    return nodeTrackNumber.GetAttribute("position", "");
-                }
-            }
-
-            return null;
-        }
+        public string getTrackNumber() => navigator?.SelectSingleNode(trackNumberXpath)?.GetAttribute("position", "");
 
         public static void Main()
         {
             AlbumInfo albumInfo = new AlbumInfo();
             //Console.WriteLine("Last FM API Key: " + albumArt.getLastFMAPIKey());
-            albumInfo.loadAlbumInfo("The Chainsmokers", "#SELFIE");
-            Console.WriteLine("Album Title: " + albumInfo.getAlbumTitle());
-            Console.WriteLine("Track Number: " + albumInfo.getTrackNumber());
-            Console.WriteLine("Image URL: " + albumInfo.getAlbumImageURL());
+            albumInfo.loadAlbumInfoAsync(@"The Chainsmokers", @"#SELFIE");
+            Console.WriteLine($@"Album Title: {albumInfo.getAlbumTitle()}");
+            Console.WriteLine($@"Track Number: {albumInfo.getTrackNumber()}");
+            Console.WriteLine($@"Image URL: {albumInfo.getAlbumImageURL()}");
         }
     }
 }

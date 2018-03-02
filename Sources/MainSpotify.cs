@@ -70,39 +70,30 @@ class NameChangeTracker
     private static void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint
                     dwEventThread, uint dwmsEventTime)
     {
-        if ((idObject == 0) && (idChild == 0))
-        {
-            if (psi.isSpotifyAvailable() && hwnd.ToInt32() == psi.getSpotifyWindowHandle().ToInt32())
-            {
-                string track = tmd.getTrack();
-                string artist = tmd.getArtist();
+        if ((idObject != 0) || (idChild != 0)) return;
+        if (!psi.isSpotifyAvailable() || hwnd.ToInt32() != psi.getSpotifyWindowHandle().ToInt32()) return;
+        string track = tmd.getTrack();
+        string artist = tmd.getArtist();
 
-                if (track != null || artist != null)
-                {
-                    //Console.WriteLine(artist + " - " + track);
-                    notify.showViaToast(myForm, track, artist);
-                    //Console.WriteLine("Finished Showing");
-                }
-            }
+        if (track != null || artist != null)
+        {
+            //Console.WriteLine(artist + " - " + track);
+            notify.showViaToast(myForm, track, artist);
+            //Console.WriteLine("Finished Showing");
         }
     }
 
     private static void WinEventProc_start(IntPtr hWinEventHook_start, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
     {
-        if (idObject == 0 && idChild == 0)
-        {
-            //specifically looking for spotify via hwnd_spotify
-            //across all process(hwnd).
-            if (psi.isSpotifyAvailable() && hwnd.ToInt32() == psi.getSpotifyWindowHandle().ToInt32())
-            {
-                //Console.WriteLine("checking hwnd");
-                if (eventType == EVENT_OBJECT_CREATE)
-                {
-                    //Console.WriteLine("create event");
-                    IntPtr hWinEventHook = SetWinEventHook(0x0800c, 0x800c, IntPtr.Zero, procDelegate, Convert.ToUInt32(psi.getSpotifyPID()), 0, 0);
-                }
-            }
-        }
+        if (idObject != 0 || idChild != 0) return;
+        //specifically looking for spotify via hwnd_spotify
+        //across all process(hwnd).
+        if (!psi.isSpotifyAvailable() || hwnd.ToInt32() != psi.getSpotifyWindowHandle().ToInt32()) return;
+        //Console.WriteLine("checking hwnd");
+        if (eventType != EVENT_OBJECT_CREATE) return;
+        //Console.WriteLine("create event");
+        if (SetWinEventHook(0x0800c, 0x800c, IntPtr.Zero, procDelegate, Convert.ToUInt32(psi.getSpotifyPID()), 0, 0) ==
+            IntPtr.Zero) throw new Exception($"SetWinEventHook failed with{Marshal.GetLastWin32Error()}");
     }
 
     public static void Main()

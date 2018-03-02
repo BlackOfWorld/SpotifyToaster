@@ -24,7 +24,7 @@ namespace Notification
         private String getNotificationText(String track, String artist)
         {
             //string command = string.Format("/t:\"Song: {0}\" /i:\"C:\\spotify.jpg\" /n:\"Spotify\" /a:\"Spotify\" \"Artist: {1}\"",track,artist);
-            return String.Format("Song: {0} Artist: {1}", track, artist);
+            return $"Song: {track} Artist: {artist}";
         }
 
         public void showViaToast(ToastForm myForm, String track, String artist)
@@ -35,25 +35,19 @@ namespace Notification
             myForm.setAlbumImage(spotifytoaster.Properties.Resources.album_missing);
 
             // Attempt to load additional information about the track
-            if (albumInfo.loadAlbumInfo(artist, track))
+            if (albumInfo.loadAlbumInfoAsync(artist, track))
             {
                 // Set Album Title if we have one
-                if (null != albumInfo.getAlbumTitle())
-                {
+                if (!string.IsNullOrEmpty(albumInfo.getAlbumTitle()))
                     myForm.setAlbum(albumInfo.getAlbumTitle());
-                }
 
                 // Set Album Image URL if we have one
-                if (null != albumInfo.getAlbumImageURL())
-                {
+                if (!string.IsNullOrEmpty(albumInfo.getAlbumImageURL()))
                     myForm.setAlbumImageUrl(albumInfo.getAlbumImageURL());
-                }
 
                 // Add Track Number to the title if we have one
                 if (null != albumInfo.getTrackNumber())
-                {
-                    myForm.setTrack(albumInfo.getTrackNumber() + ". " + track);
-                }
+                    myForm.setTrack($"{albumInfo.getTrackNumber()}. {track}");
             }
 
             myForm.Show();
@@ -61,20 +55,20 @@ namespace Notification
 
         public void showViaSystemTrayBalloon(String track, String artist)
         {
-            NotifyIcon balloon = new NotifyIcon();
-            balloon.Icon = SystemIcons.Exclamation;
-            balloon.BalloonTipIcon = ToolTipIcon.Info;
-            balloon.BalloonTipTitle = "Spotify Song Changed";
-            balloon.BalloonTipText = getNotificationText(track, artist);
-            balloon.Visible = true;
+            NotifyIcon balloon = new NotifyIcon
+            {
+                Icon = SystemIcons.Exclamation,
+                BalloonTipIcon = ToolTipIcon.Info,
+                BalloonTipTitle = @"Spotify Song Changed",
+                BalloonTipText = getNotificationText(track, artist),
+                Visible = true
+            };
             balloon.ShowBalloonTip(3000);
         }
 
         public void showViaGrowl(String track, String artist)
         {
-            ProcessStartInfo cmdsi = new ProcessStartInfo("growlnotify.exe");
-            cmdsi.Arguments = getNotificationText(track, artist);
-            Process cmd = Process.Start(cmdsi);
+            Process.Start(new ProcessStartInfo("growlnotify.exe") { Arguments = getNotificationText(track, artist) });
         }
 
         public void showViaMessageBox(String track, String artist)

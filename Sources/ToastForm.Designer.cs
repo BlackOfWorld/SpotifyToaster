@@ -34,23 +34,26 @@
             // 
             // albumArt
             // 
+            this.albumArt.Image = global::spotifytoaster.Properties.Resources.album_missing;
             this.albumArt.InitialImage = null;
-            this.albumArt.Location = new System.Drawing.Point(10, 10);
+            this.albumArt.Location = new System.Drawing.Point(15, 15);
+            this.albumArt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.albumArt.Name = "albumArt";
-            this.albumArt.Size = new System.Drawing.Size(64, 64);
+            this.albumArt.Size = new System.Drawing.Size(96, 98);
             this.albumArt.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.albumArt.TabIndex = 3;
             this.albumArt.TabStop = false;
             // 
             // ToastForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowText;
-            this.ClientSize = new System.Drawing.Size(363, 84);
+            this.ClientSize = new System.Drawing.Size(544, 129);
             this.Controls.Add(this.albumArt);
             this.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ToastForm";
             this.ShowInTaskbar = false;
             this.Text = "ToastForm";

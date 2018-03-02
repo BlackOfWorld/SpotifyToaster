@@ -84,11 +84,6 @@
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Sources\ProcessInformation.cs" />
-    <Compile Include="Properties\ProtectedResources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ProtectedResources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,10 +104,6 @@
     <Compile Include="Sources\TrackMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\ProtectedResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ProtectedResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

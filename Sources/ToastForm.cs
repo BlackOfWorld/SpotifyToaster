@@ -57,8 +57,7 @@ namespace spotifytoaster
             createTrayIconAndMenu();
 
             // Create and run timer for animation
-            timer = new Timer();
-            timer.Interval = myOptions.ToastMovementSpeed;
+            timer = new Timer {Interval = myOptions.ToastMovementSpeed};
             timer.Tick += new EventHandler(timerTick);
 
             // Now let's setup our Spotify Window tracker
@@ -75,8 +74,12 @@ namespace spotifytoaster
         {
             overlay = new ToastOverlay();
             overlay.initializeFormSettings(myOptions);
-            this.LocationChanged += delegate { overlay.Location = this.Location; };
-            this.Load += delegate { overlay.Visible = false; overlay.Show(this); };
+            this.LocationChanged += (sender, args) => overlay.Location = this.Location;
+            this.Load += (sender, args) =>
+            {
+                overlay.Visible = false;
+                overlay.Show(this);
+            };
         }
 
         private void createTrayIconAndMenu()
@@ -89,13 +92,16 @@ namespace spotifytoaster
             // Create a tray icon. In this example we use a
             // standard system icon for simplicity, but you
             // can of course use your own custom icon too.
-            trayIcon = new NotifyIcon();
-            trayIcon.Text = "Spotify Toaster";
-            trayIcon.Icon = new Icon(Icon.ExtractAssociatedIcon("SpotifyToaster.exe"), 40, 40);
+            trayIcon = new NotifyIcon
+            {
+                Text = @"Spotify Toaster",
+                Icon = new Icon(
+                    Icon.ExtractAssociatedIcon("SpotifyToaster.exe") ?? throw new InvalidOperationException(), 40, 40),
+                ContextMenu = trayMenu,
+                Visible = true
+            };
 
             // Add menu to tray icon and show it.
-            trayIcon.ContextMenu = trayMenu;
-            trayIcon.Visible = true;
         }
 
         private void onPaint(object sender, PaintEventArgs e)
@@ -106,22 +112,20 @@ namespace spotifytoaster
 
         private void toastVisibleChanged(object sender, EventArgs e)
         {
-            if (this.Visible == true)
-            {
-                // Move window out of screen
-                startPosX = Screen.PrimaryScreen.WorkingArea.Width - Width;
-                startPosY = Screen.PrimaryScreen.WorkingArea.Height;
-                SetDesktopLocation(startPosX, startPosY);
-                base.OnLoad(e);
+            if (this.Visible != true) return;
+            // Move window out of screen
+            startPosX = Screen.PrimaryScreen.WorkingArea.Width - Width;
+            startPosY = Screen.PrimaryScreen.WorkingArea.Height;
+            SetDesktopLocation(startPosX, startPosY);
+            base.OnLoad(e);
 
-                // Setup overlay also
-                TopMost = true;
-                overlay.TopMost = true;
+            // Setup overlay also
+            TopMost = true;
+            overlay.TopMost = true;
 
-                // Begin animation
-                timer.Enabled = true;
-                timer.Start();
-            }
+            // Begin animation
+            timer.Enabled = true;
+            timer.Start();
         }
 
         private void timerTick(object sender, EventArgs e)
